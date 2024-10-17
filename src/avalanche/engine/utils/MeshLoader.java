@@ -12,31 +12,32 @@ import java.util.List;
 
 import avalanche.components.Mesh;
 
-public class Loader {
+public class MeshLoader {
 
 	private List<Integer> vaos = new ArrayList<Integer>();
 	private List<Integer> vbos = new ArrayList<Integer>();
 	private List<Integer> textures = new ArrayList<Integer>();
 	
-	private static Loader instance = null;
+	private static MeshLoader instance = null;
 	
-	public static Loader get() {
+	public static MeshLoader get() {
 		if (instance == null) {
-			instance = new Loader();
+			instance = new MeshLoader();
 		}
 		return instance;
 	}
 	
-	public Loader() {
+	public MeshLoader() {
 		if (instance == null) {
 			instance = this;
 		}
 	}
 	
-	public Mesh loadToVAO(float[] positions,int[] indicies) {
+	public Mesh loadToVAO(float[] positions,float[] textureCoords,int[] indicies) {
 		int vaoID = createVAO();
 		bindIndiciesBuffer(indicies);
 		storeDataInAttributeList(0,3, positions);
+		storeDataInAttributeList(1, 2, textureCoords);
 		
 		unbindVAO();
 		return new Mesh(vaoID,indicies.length);

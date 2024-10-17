@@ -59,16 +59,17 @@ public class Window {
 		this.posY = y;
 
 		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
-		if (x == WINDOW_CENTERED_X) {
-			posX = (vidmode.width() - this.width) / 2;
+		if (!Fullscreen) {
+			if (x == WINDOW_CENTERED_X) {
+				posX = (vidmode.width() - this.width) / 2;
+			}
+	
+			if (y == WINDOW_CENTERED_Y) {
+				posY = (vidmode.height() - this.height) / 2;
+			}
+	
+			glfwSetWindowPos(data, posX, posY);
 		}
-
-		if (y == WINDOW_CENTERED_Y) {
-			posY = (vidmode.height() - this.height) / 2;
-		}
-
-		glfwSetWindowPos(data, posX, posY);
 	}
 
 	public void setSize(int width, int height) {
