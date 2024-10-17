@@ -20,6 +20,6 @@ public class Constants {
 	public static final int NO_FPS = 999999999;
 	
 	// ----- Shader constants -----
-	public static final String VERTEX_FILE = "src/avalanche/shaders/default.vert";
-	public static final String FRAG_FILE = "src/avalanche/shaders/default.frag";
+	public static final String VERTEX_FILE = "src/avalanche/engine/shader/default.vert";
+	public static final String FRAG_FILE = "src/avalanche/engine/shader/default.frag";
 }

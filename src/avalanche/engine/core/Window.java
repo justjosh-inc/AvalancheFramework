@@ -3,11 +3,16 @@ package avalanche.engine.core;
 import static avalanche.engine.utils.Constants.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.opengl.GL11.glViewport;
 
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+
+import avalanche.engine.inputs.Keyboard;
+import avalanche.engine.inputs.MouseButton;
+import avalanche.engine.inputs.MouseMovement;
 
 public class Window {
 
@@ -24,9 +29,9 @@ public class Window {
 	private int     posX =       50;
 	private int     posY =       50;
 
-//	private Keyboard keyboard;
-//	private MouseButton mouseButton;
-//	private MouseMovement mouseMovement;
+	private Keyboard keyboard;
+	private MouseButton mouseButton;
+	private MouseMovement mouseMovement;
 	
 	private long data;
 
@@ -125,22 +130,35 @@ public class Window {
 
 		glfwMakeContextCurrent(data);
 		
-//		keyboard = new Keyboard();
-//		mouseButton = new MouseButton();
-//		mouseMovement = new MouseMovement();
+		keyboard = new Keyboard();
+		mouseButton = new MouseButton();
+		mouseMovement = new MouseMovement();
 		
-//		glfwSetKeyCallback(data, keyboard);
-//		glfwSetMouseButtonCallback(data, mouseButton);
-//		glfwSetCursorPosCallback(data, mouseMovement);
+		glfwSetKeyCallback(data, keyboard);
+		glfwSetMouseButtonCallback(data, mouseButton);
+		glfwSetCursorPosCallback(data, mouseMovement);
 
 		if (vSync) {
 			glfwSwapBuffers(data);
 		}
 
 		GL.createCapabilities();
+		
+		setResizeCallback();
 		glfwShowWindow(data);
 	}
+	
+	private void setResizeCallback() {
+	    glfwSetFramebufferSizeCallback(data, (window, width, height) -> {
+	        System.out.println("Resizing to: " + width + "x" + height);
+	        
+	        this.width = width;
+	        this.height = height;
+	        glViewport(0, 0, width, height); // Adjust the viewport to the new dimensions
+	    });
+	}
 
+	
 	public void update() {
 		glfwSwapBuffers(data);
 
@@ -148,9 +166,9 @@ public class Window {
 	}
 
 	public void close() {
-//		keyboard.close();
-//		mouseButton.close();
-//		mouseMovement.close();
+		keyboard.close();
+		mouseButton.close();
+		mouseMovement.close();
 
 		glfwDestroyWindow(data);
 		glfwSetErrorCallback(null).free();
