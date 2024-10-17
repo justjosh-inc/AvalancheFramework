@@ -50,6 +50,38 @@ public class Logger {
 		
 	}
 	
+	public static void toConsole(logLevel level, String message,boolean hideLogInfo) {
+		String consoleColour = "";
+	    switch (level) {
+	        case INFO:
+	            consoleColour += ANSI_CYAN;
+	            break; 
+	        case WARNING:
+	            consoleColour += ANSI_YELLOW;
+	            break;
+	        case ERROR:
+	            consoleColour += ANSI_RED;
+	            break;
+	        case DEBUG:
+	            consoleColour += ANSI_GREEN;
+	            break;
+	        default:
+	            consoleColour += ANSI_RESET;
+	            break;
+	    }
+		
+		if (!hideLogInfo) {
+		    String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		    String formattedMessage = String.format("%s [%s] %s", timestamp, level.name(), message);
+		    System.out.println(consoleColour + formattedMessage + ANSI_RESET);
+		}else {
+		    String formattedMessage = String.format("%s",message);
+		    System.out.println(consoleColour + formattedMessage + ANSI_RESET);
+		}
+
+	    
+	}
+	
 	public static void toConsole(logLevel level, String message) {
 	    String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 	    String formattedMessage = String.format("%s [%s] %s", timestamp, level.name(), message);

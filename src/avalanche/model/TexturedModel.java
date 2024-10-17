@@ -10,8 +10,8 @@ public class TexturedModel extends Square{
 
 	private Texture texture;
 	
-	public TexturedModel(String imagePath) {
-		texture = new Texture(imagePath);
+	public TexturedModel(Texture texture) {
+		this.texture = texture;
 	}
 	
 	public void render() {

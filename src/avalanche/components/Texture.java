@@ -11,12 +11,13 @@ import org.lwjgl.BufferUtils;
 
 import avalanche.engine.utils.Util;
 
-public class Texture {
+public class Texture extends Component{
 
 	private int ID;
 	private int width,height;
 	
 	public Texture(String path) {
+		super(Component.TYPE_TEXTURE);
 		ID = load(path);
 	}
 	

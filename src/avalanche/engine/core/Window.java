@@ -2,23 +2,30 @@ package avalanche.engine.core;
 
 import static avalanche.engine.utils.Constants.*;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.openal.ALC10.*;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
-import static org.lwjgl.opengl.GL11.glViewport;
 
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.openal.AL;
+import org.lwjgl.openal.AL10;
+import org.lwjgl.openal.ALC;
+import org.lwjgl.openal.ALC10;
+import org.lwjgl.openal.ALCCapabilities;
+import org.lwjgl.openal.ALCapabilities;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 
 import avalanche.engine.inputs.Keyboard;
 import avalanche.engine.inputs.MouseButton;
 import avalanche.engine.inputs.MouseMovement;
+import avalanche.engine.utils.Logger;
 
 public class Window {
 
 	private static Window instance = null;
-
-	public static final String VERSION = "0.0.3";
 
 	private int     width  =     WINDOW_WIDTH;
 	private int     height =     WINDOW_HEIGHT;
@@ -32,6 +39,9 @@ public class Window {
 	private Keyboard keyboard;
 	private MouseButton mouseButton;
 	private MouseMovement mouseMovement;
+	
+	private long audioContext;
+	private long audioDevice;
 	
 	private long data;
 
@@ -98,14 +108,9 @@ public class Window {
 		GLFWErrorCallback.createPrint(System.err).set();
 
 		if (!glfwInit()) {
-			throw new IllegalStateException("Unable to initialize GLFW");
+			Logger.toConsole(Logger.logLevel.ERROR, "Failed to init GLFW");
+			return;
 		}
-
-		System.out.println("======================\n" 
-				+ "VERSIONS:\n" 
-				+ "Avalanche - "+ VERSION + "\n" 
-				+ "GLFW      - " + Version.getVersion() + "\n" 
-				+ "==============================\n");
 
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
@@ -118,7 +123,8 @@ public class Window {
 
 		data = glfwCreateWindow(width, height, title, NULL, NULL);
 		if (data == NULL) {
-			throw new RuntimeException("Failed to make Avalance Window");
+			Logger.toConsole(Logger.logLevel.ERROR, "Failed to init GLFW Window");
+			return;
 		}
 
 		glfwSetWindowPos(data, posX, posY);
@@ -146,6 +152,29 @@ public class Window {
 		GL.createCapabilities();
 		
 		setResizeCallback();
+		
+		String defaultDeviceName = alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER);
+		audioDevice = alcOpenDevice(defaultDeviceName);
+		
+		int[] attributes = {0};
+		audioContext = alcCreateContext(audioDevice, attributes);
+		alcMakeContextCurrent(audioContext);
+		ALCCapabilities alcCapabilities = ALC.createCapabilities(audioDevice);
+		ALCapabilities alCapabilities = AL.createCapabilities(alcCapabilities);
+		
+		if (!alCapabilities.OpenAL10) {
+			Logger.toConsole(Logger.logLevel.ERROR, "Failed to init OpenAL");
+			return;
+		}
+		
+		Logger.toConsole(Logger.logLevel.INFO,"======================\n" 
+				+ "VERSIONS:\n" 
+				+ "\nAvalanche - "+ VERSION + "\n \n" 
+				+ "GLFW      - " + Version.getVersion() + "\n" 
+				+ "Open GL   - " + GL11.glGetString(GL11.GL_VERSION) + "\n"
+				+ "Open AL   - " + AL10.alGetString(AL10.AL_VERSION) + "\n"
+				+ "==============================\n",true);
+		
 		glfwShowWindow(data);
 	}
 	
@@ -170,7 +199,12 @@ public class Window {
 		keyboard.close();
 		mouseButton.close();
 		mouseMovement.close();
-
+		
+		alcMakeContextCurrent(0);
+		alcDestroyContext(audioContext);
+		alcCloseDevice(audioDevice);
+		
+		glfwMakeContextCurrent(0);
 		glfwDestroyWindow(data);
 		glfwSetErrorCallback(null).free();
 		glfwTerminate();

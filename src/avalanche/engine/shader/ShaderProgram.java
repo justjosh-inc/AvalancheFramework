@@ -33,8 +33,10 @@ public abstract class ShaderProgram {
 	public boolean validate(int shaderID,String type) {
 		boolean result = true;
 		glCompileShader(shaderID);
-		if (glGetShaderi(shaderID, GL_COMPILE_STATUS) == 0) {
+		if (glGetShaderi(shaderID, GL_COMPILE_STATUS) == GL_FALSE) {
+			int len = glGetShaderi(shaderID,GL_INFO_LOG_LENGTH);
 			toConsole(logLevel.WARNING, "Failed to compile " + type + " Shader");
+			toConsole(logLevel.WARNING,glGetShaderInfoLog(shaderID,len));
 			result = false;
 		}
 		return result;

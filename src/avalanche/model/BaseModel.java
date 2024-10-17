@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL30.*;
 import avalanche.components.Mesh;
 import avalanche.engine.utils.MeshLoader;
 
-public class BaseModel {
+public abstract class BaseModel {
 
 	protected float[] verticies;
 	protected int[] indicies;
