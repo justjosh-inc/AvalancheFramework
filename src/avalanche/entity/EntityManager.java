@@ -18,4 +18,10 @@ public class EntityManager {
 			entity.render();
 		}
 	}
+	
+	public void cleanUp() {
+		for (Entity entity : entities) {
+			entity.cleanUp();
+		}
+	}
 }

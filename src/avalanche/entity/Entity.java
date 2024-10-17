@@ -32,4 +32,10 @@ public class Entity {
 		}
 	}
 	
+	public void cleanUp() {
+		for (Component component : components.values()) {
+			component.cleanUp();
+		}
+	}
+	
 }
