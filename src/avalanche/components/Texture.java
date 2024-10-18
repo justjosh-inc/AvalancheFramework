@@ -1,6 +1,9 @@
 package avalanche.components;
 
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
@@ -9,13 +12,14 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
 
+import avalanche.engine.shader.StaticShader;
 import avalanche.engine.utils.Util;
 
 public class Texture extends Component{
 
 	private int ID;
 	private int width,height;
-	
+	 
 	public Texture(String path) {
 		super(Component.TYPE_TEXTURE);
 		ID = load(path);
@@ -65,4 +69,5 @@ public class Texture extends Component{
 	public void unbind() {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+	
 }

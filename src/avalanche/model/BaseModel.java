@@ -29,7 +29,7 @@ public abstract class BaseModel {
 		return indicies;
 	}
 	
-	public void setIndicies(int[] indicies) {
+	public void setIndicies(int[] indicies) { 
 		this.indicies = indicies;
 	}
 	

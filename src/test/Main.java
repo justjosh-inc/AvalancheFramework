@@ -1,47 +1,39 @@
 package test;
 
-import avalanche.audio.Sound;
+import static avalanche.engine.utils.Constants.*;
+
 import avalanche.components.Texture;
 import avalanche.engine.core.Renderer;
 import avalanche.engine.core.Window;
-import avalanche.engine.inputs.Key;
-import avalanche.engine.inputs.MouseButton;
 import avalanche.engine.shader.StaticShader;
-import avalanche.engine.utils.Constants;
+import avalanche.entity.EntityManager;
+import avalanche.model.Square;
 import avalanche.model.TexturedModel;
+import avalanche.model.Triangle;
 
 public class Main {
 	public static void main(String[] args) {
 		Window window = new Window();
-		window.setSize(1080, 720);
-		window.setResizeable(true);
 		window.init();
-		window.setPosition(Constants.WINDOW_CENTERED_X, Constants.WINDOW_CENTERED_Y);
-		
-		Sound sound = new Sound("src/avalanche/res/b.wav");
-		
-		Texture texture = new Texture("src/avalanche/res/a.png");
+		window.setPosition(WINDOW_CENTERED_X, WINDOW_CENTERED_Y);
 		
 		Renderer renderer = new Renderer();
-		TexturedModel model = new TexturedModel(texture);
+
+		EntityManager manager = new EntityManager();
 		
-		StaticShader shader = new StaticShader("src/avalanche/engine/shader/defaultImage.vert","src/avalanche/engine/shader/defaultImage.frag");
-		shader.addAttribute(0, "position");
-		shader.addAttribute(1, "textCoords");
+		Player player = new Player(); 
+		manager.addEntity(player);
 		
 		
-		while (!window.shouldClose()) {
-			renderer.clear(Constants.BACKGROUND_COLOUR);
-			if (MouseButton.isButtonPressed(Key.MB_LEFT)) {
-				sound.play();
-			}
-			shader.start();
-			model.render();
-			shader.stop();
+		while(!window.shouldClose()) {
+			renderer.clear(BACKGROUND_COLOUR);
+			
+			manager.update();
+			manager.render();
 			
 			window.update();
 		}
-		
+		manager.cleanUp();
 		window.close();
 	}
 

@@ -5,12 +5,15 @@ import java.util.Map;
 
 import avalanche.components.Component;
 import avalanche.engine.time.Clock;
-
+import avalanche.engine.utils.MeshLoader;
+ 
 public class Entity {
 
 	Map<String,Component> components = new HashMap<>();
 	private double deltaTime = 0.0;
 	
+	protected MeshLoader loader = new MeshLoader();
+
 	public <T extends Component> void addComponent(T component) {
 		components.put(component.getComponentID(),component);
 	}

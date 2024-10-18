@@ -6,7 +6,6 @@ public class Component {
 	public static String TYPE_MESH = "MESH";
 	public static String TYPE_TRANSFORM = "TRANSFORM";
 	
-	
 	protected String ID;
 	
 	public Component(String type) {

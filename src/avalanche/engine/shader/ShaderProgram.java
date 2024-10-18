@@ -1,16 +1,32 @@
 package avalanche.engine.shader;
 
+import static avalanche.engine.utils.Logger.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.FloatBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.lwjgl.opengl.GL20.*;
-import static avalanche.engine.utils.Logger.*;
+import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
 
-public abstract class ShaderProgram {
+import avalanche.engine.maths.Matrix4f;
+import avalanche.engine.utils.Logger;
+import avalanche.engine.utils.Logger.logLevel; 
+
+public abstract class ShaderProgram { 
+
 	protected int programID;
 	private int vertexShaderID;
 	private int fragmentShaderID;
+	
+	private Map<String,Integer> locationCache = new HashMap<String,Integer>();
+	
+	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
 	
 	public ShaderProgram(String vertexFile,String fragmentFile){
 		vertexShaderID = loadShader(vertexFile,GL_VERTEX_SHADER);
@@ -24,7 +40,7 @@ public abstract class ShaderProgram {
 		validate(fragmentShaderID, "FRAGMENT");
 		
 		glLinkProgram(programID);
-		glValidateProgram(programID);
+		glValidateProgram(programID); 
 		if (programID == 0) {
 		    toConsole(logLevel.WARNING, "Failed to compile shader program");
 		}
@@ -42,6 +58,43 @@ public abstract class ShaderProgram {
 		return result;
 	}
 	
+	public int getUniform(String name) {
+		int result = glGetUniformLocation(programID, name);
+		if (locationCache.containsKey(name)) {
+			return locationCache.get(name);
+		}
+		if (result == -1) {
+			Logger.toConsole(Logger.logLevel.ERROR, "Could not find variable " + name + "from the shader");
+		}else {
+			locationCache.put(name, result);
+		}
+		
+		return result; 
+	}
+	
+	public void loadFloat(int location,float value) {
+		glUniform1f(location,value);
+	}
+	
+	public void loadVector(int location, Vector3f vector) {
+		glUniform3f(location,vector.x,vector.y,vector.z);
+	}
+	
+	public void loadBoolean(int location, boolean value) {
+		float toLoad = 0;
+		if (value) {
+			toLoad = 1;
+		}
+		
+		glUniform1f(location, toLoad);
+	}
+	
+	public void loadMatrix(int location, Matrix4f matrix) {
+		FloatBuffer matrixFloatBuffer = matrix.toFloatBuffer();
+		glUniformMatrix4fv(location, false, matrixFloatBuffer);
+		
+	}
+	
 	public void start(){
 		glUseProgram(programID);
 	}
@@ -52,6 +105,7 @@ public abstract class ShaderProgram {
 	
 	public void cleanUp(){
 		stop();
+		
 		glDetachShader(programID, vertexShaderID);
 		glDetachShader(programID, fragmentShaderID);
 		glDeleteShader(vertexShaderID);

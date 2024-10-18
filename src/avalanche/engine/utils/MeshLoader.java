@@ -26,7 +26,7 @@ public class MeshLoader {
 		}
 		return instance;
 	}
-	
+	 
 	public MeshLoader() {
 		if (instance == null) {
 			instance = this;

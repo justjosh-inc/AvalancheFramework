@@ -3,9 +3,13 @@ package avalanche.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntityManager {
+public class EntityManager { 
 
 	List<Entity> entities = new ArrayList<>();
+	
+	public void addEntity(Entity entity) {
+		entities.add(entity);
+	}
 	
 	public void update() {
 		for (Entity entity : entities) {

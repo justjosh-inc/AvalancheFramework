@@ -4,7 +4,9 @@ in vec3 position;
 
 out vec3 out_colour;
 
+uniform mat4 transformationMatrix;
+
 void main(void){
-	gl_Position = vec4(position,1.0);
-	out_colour = vec3(position.x + 0.5,1.0,position.z + 0.5);
+	gl_Position = transformationMatrix * vec4(position,1.0);
+	out_colour = position;
 }
