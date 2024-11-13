@@ -8,6 +8,9 @@ import java.awt.Toolkit;
 
 import org.lwjgl.opengl.GL;
 
+import loader.MeshLoader;
+import utils.Logger;
+
 public class Window {
 
 	// basic variables
@@ -97,7 +100,7 @@ public class Window {
 	// MAIN FUNCTIONS
 	public void init() {
 		if (!glfwInit()) {
-			// log ERROR
+			Logger.toConsole(Logger.logLevel.ERROR, "Could not initialise GLFW",true);
 			System.exit(-1);
 		}
 
@@ -106,7 +109,7 @@ public class Window {
 
 		pointer = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
 		if (pointer == NULL) {
-			//log ERROR
+			Logger.toConsole(Logger.logLevel.ERROR, "Could not initialise GLFW Window",true);
 			System.exit(-1);
 		}
 		
@@ -118,17 +121,19 @@ public class Window {
 		
 		glfwShowWindow(pointer);
 	}
-	
+
 	public void update() {
 		glfwSwapBuffers(pointer);
 		glfwPollEvents();
 	}
-	
+
 	public void close() {
+		MeshLoader.cleanUp();
+
 		glfwDestroyWindow(pointer);
 		glfwTerminate();
 	}
-	
+
 	public boolean shouldClose() {
 		return glfwWindowShouldClose(pointer);
 	}
