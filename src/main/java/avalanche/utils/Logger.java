@@ -1,4 +1,4 @@
-package utils;
+package avalanche.utils;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -49,6 +49,7 @@ public class Logger {
 		}
 		
 	}
+	
 	
 	public static void toConsole(logLevel level, String message,boolean extraInfo) {
 	    String formattedMessage = "";

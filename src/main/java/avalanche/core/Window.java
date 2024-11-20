@@ -1,4 +1,4 @@
-package core;
+package avalanche.core;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -6,11 +6,17 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
+import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.stb.STBImage;
 
-import loader.MeshLoader;
-import utils.Logger;
+import avalanche.loader.MeshLoader;
+import avalanche.loader.TextureLoader;
+import avalanche.utils.Logger;
 
 public class Window {
 
@@ -98,10 +104,39 @@ public class Window {
 		}
 	}
 
+    public void setIcon(String path) {
+        GLFWImage.Buffer iconBuffer = loadImage(path);
+
+        glfwSetWindowIcon(pointer, iconBuffer);
+
+        iconBuffer.free();
+    }
+
+    private static GLFWImage.Buffer loadImage(String path) {
+        IntBuffer width = BufferUtils.createIntBuffer(1);
+        IntBuffer height = BufferUtils.createIntBuffer(1);
+        IntBuffer channels = BufferUtils.createIntBuffer(1);
+
+        ByteBuffer image = STBImage.stbi_load(path, width, height, channels, 4);
+        if (image == null) {
+            throw new RuntimeException("Failed to load image: " + path);
+        }
+
+        GLFWImage.Buffer icons = GLFWImage.malloc(1);
+        icons.position(0);
+
+        GLFWImage icon = icons.get(0);
+        icon.set(width.get(0), height.get(0), image);
+
+        STBImage.stbi_image_free(image);
+
+        return icons;
+    }
+    
 	// MAIN FUNCTIONS
 	public void init() {
 		if (!glfwInit()) {
-			Logger.toConsole(Logger.logLevel.ERROR, "Could not initialise GLFW",true);
+			Logger.toConsole(Logger.logLevel.ERROR, "Could not initialise GLFW", true);
 			System.exit(-1);
 		}
 
@@ -110,20 +145,22 @@ public class Window {
 
 		pointer = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
 		if (pointer == NULL) {
-			Logger.toConsole(Logger.logLevel.ERROR, "Could not initialise GLFW Window",true);
+			Logger.toConsole(Logger.logLevel.ERROR, "Could not initialise GLFW Window", true);
 			System.exit(-1);
 		}
-		
+
 		this.setPosition(this.x, this.y);
-		
+		this.setIcon("src/main/resources/icons/main.png");
+
 		glfwSetFramebufferSizeCallback(pointer, (window, width, height) -> {
-            glViewport(0, 0, width, height); // Adjust viewport
-            // Optionally, update other resources here (e.g., framebuffers or textures)
-        });
-		
+			this.width = width;
+			this.height = height;
+			glViewport(0, 0, width, height);
+		});
+
 		glfwMakeContextCurrent(pointer);
 		GL.createCapabilities();
-		
+
 		glfwShowWindow(pointer);
 	}
 
@@ -134,6 +171,7 @@ public class Window {
 
 	public void close() {
 		MeshLoader.cleanUp();
+		TextureLoader.cleanUp();
 
 		glfwDestroyWindow(pointer);
 		glfwTerminate();

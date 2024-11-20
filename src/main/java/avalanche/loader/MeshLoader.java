@@ -1,14 +1,17 @@
-package loader;
+package avalanche.loader;
 
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import component.Mesh;
-import utils.Utils;
+import avalanche.component.Mesh;
+import avalanche.utils.Utils;
 
 public class MeshLoader {
 
@@ -17,6 +20,7 @@ public class MeshLoader {
 
 	public static Mesh load(float[] positions, float[] normals, float[] texCoords, int[] indices) {
 		int id = createVAO();
+		storeIndicesBuffer(indices);
 		storeDataInAttribList(0, 3, positions);
 		storeDataInAttribList(1, 2, texCoords);
 		storeDataInAttribList(2, 3, normals);
@@ -29,6 +33,14 @@ public class MeshLoader {
 		vaos.add(vaoID);
 		glBindVertexArray(vaoID);
 		return vaoID;
+	}
+
+	private static void storeIndicesBuffer(int[] indices) {
+		int vboID = glGenBuffers();
+		vbos.add(vboID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID);
+		IntBuffer buffer = Utils.storedDataInIntBuffer(indices);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
 	}
 
 	private static void storeDataInAttribList(int index, int size, float[] data) {

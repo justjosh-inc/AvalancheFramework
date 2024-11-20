@@ -1,4 +1,6 @@
-package component;
+package avalanche.component;
+
+import avalanche.core.Shader;
 
 public class Mesh {
 	private int ID;
@@ -9,7 +11,8 @@ public class Mesh {
 	private float[] texCoords;
 	private int[] indices;
 
-	private Texture texture;
+	private Texture texture = null;
+	private Shader shader = null;
 
 	public Mesh(int ID, float[] positions, float[] normals, float[] texCoords, int[] indices) {
 		this.ID = ID;
@@ -39,7 +42,7 @@ public class Mesh {
 		this.normals = mesh.normals;
 		this.texCoords = mesh.texCoords;
 		this.indices = mesh.indices;
-		
+
 		this.texture = texture;
 	}
 
@@ -49,6 +52,14 @@ public class Mesh {
 
 	public Texture getTexture() {
 		return this.texture;
+	}
+
+	public Shader getShader() {
+		return shader;
+	}
+
+	public void setShader(Shader shader) {
+		this.shader = shader;
 	}
 
 	public int getID() {

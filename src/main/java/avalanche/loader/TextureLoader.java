@@ -1,4 +1,4 @@
-package loader;
+package avalanche.loader;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.*;
@@ -11,14 +11,14 @@ import java.util.List;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
-import component.Texture;
-import utils.Logger;
-
+import avalanche.component.Texture;
+import avalanche.utils.Logger;
+ 
 public class TextureLoader {
 
 	private static List<Integer> textures = new ArrayList<Integer>();
 
-	private int load(String filePath) {
+	public static int load(String filePath) {
 		int width, height;
 		ByteBuffer buffer;
 		try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -38,6 +38,7 @@ public class TextureLoader {
 
 		int id = glGenTextures();
 		textures.add(id);
+		
 		glBindTexture(GL_TEXTURE_2D, id);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
@@ -46,7 +47,7 @@ public class TextureLoader {
 		return id;
 	}
 
-	public void cleanUp() {
+	public static void cleanUp() {
 		for (int texture : textures) {
 			glDeleteTextures(texture);
 		}

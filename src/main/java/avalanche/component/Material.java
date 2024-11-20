@@ -1,4 +1,4 @@
-package component;
+package avalanche.component;
 
 public class Material {
 
@@ -12,7 +12,7 @@ public class Material {
     private String specularMapPath;
     private float reflectivity = 0.5f;  // Default reflectivity
     private float fresnelFactor = 0.04f; // Default Fresnel effect factor
-    private float metallic = 0.0f;  // Default non-metallic
+    private float metallic = 0.0f;  // Default -> non-metallic
     private float roughness = 0.5f; // Default roughness
     
     

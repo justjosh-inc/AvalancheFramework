@@ -1,10 +1,12 @@
-package utils;
-
+package avalanche.utils;
+ 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 
@@ -13,6 +15,13 @@ public class Utils {
 	public static FloatBuffer storedDataInFloatBuffer(float[] data) {
 		FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
 		buffer.put(data);
+		buffer.flip();
+		return buffer;
+	}
+
+	public static IntBuffer storedDataInIntBuffer(int[] indices) {
+		IntBuffer buffer = BufferUtils.createIntBuffer(indices.length);
+		buffer.put(indices);
 		buffer.flip();
 		return buffer;
 	}
@@ -32,4 +41,5 @@ public class Utils {
 		
 		return content.toString();
 	}
+
 }

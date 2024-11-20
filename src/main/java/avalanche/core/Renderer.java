@@ -1,10 +1,11 @@
-package core;
+package avalanche.core;
 
-import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
-import component.Mesh;
+import avalanche.component.Mesh;
 
 public class Renderer {
 
@@ -32,14 +33,37 @@ public class Renderer {
 	}
 
 	public void render(Mesh mesh) {
+		if (mesh.getShader() != null) {
+			mesh.getShader().bind();
+		}
+
 		glBindVertexArray(mesh.getID());
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
-		glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
+
+		if (mesh.getTexture() != null) {
+			if (mesh.getShader() != null) {
+				mesh.getShader().setUniform("textureSampler", 0);
+			}
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, mesh.getTexture().getID());
+		}
+
+		if (mesh.getIndices().length <= 0) {
+			glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
+		} else {
+			glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
+		}
+
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(2);
 		glBindVertexArray(0);
+
+		if (mesh.getShader() != null) {
+			mesh.getShader().unbind();
+		}
 	}
 }
