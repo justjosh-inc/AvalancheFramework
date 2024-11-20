@@ -1,22 +1,29 @@
 package core;
 
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL40.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.system.MemoryUtil.NULL;
+import static org.lwjgl.opengl.GL32.*;
+import static org.lwjgl.system.MemoryUtil.*;
 import static utils.Logger.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import utils.Logger.logLevel;
 
 public class Shader {
 
 	private final int programID;
 	private int vertexShaderID, fragmentShaderID, geometryShaderID;
 
+	private final Map<String,Integer> uniforms;
+	
 	public Shader() {
 		programID = glCreateProgram();
 		if (programID == NULL) {
 			toConsole(logLevel.ERROR, "Could not create Shader Program", true);
 		}
+		
+		uniforms = new HashMap<String, Integer>();
 	}
 
 	private static String getShaderName(int shaderType) {

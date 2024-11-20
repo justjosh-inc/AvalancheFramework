@@ -1,6 +1,7 @@
 package core;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import java.awt.Dimension;
@@ -115,6 +116,10 @@ public class Window {
 		
 		this.setPosition(this.x, this.y);
 		
+		glfwSetFramebufferSizeCallback(pointer, (window, width, height) -> {
+            glViewport(0, 0, width, height); // Adjust viewport
+            // Optionally, update other resources here (e.g., framebuffers or textures)
+        });
 		
 		glfwMakeContextCurrent(pointer);
 		GL.createCapabilities();
