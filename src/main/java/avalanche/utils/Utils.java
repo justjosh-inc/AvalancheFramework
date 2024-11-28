@@ -1,10 +1,8 @@
 package avalanche.utils;
  
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -41,5 +39,6 @@ public class Utils {
 		
 		return content.toString();
 	}
+	
 
 }

@@ -27,7 +27,7 @@ public class MeshLoader {
 		unbind();
 		return new Mesh(id, positions, normals, texCoords, indices);
 	}
-
+	
 	private static int createVAO() {
 		int vaoID = glGenVertexArrays();
 		vaos.add(vaoID);

@@ -6,6 +6,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -14,6 +15,7 @@ import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.stb.STBImage;
 
+import avalanche.inputs.Keybord;
 import avalanche.loader.MeshLoader;
 import avalanche.loader.TextureLoader;
 import avalanche.utils.Logger;
@@ -59,7 +61,6 @@ public class Window {
 	}
 
 	// SETTERS
-	// SETTERS
 	public void setSize(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -104,35 +105,35 @@ public class Window {
 		}
 	}
 
-    public void setIcon(String path) {
-        GLFWImage.Buffer iconBuffer = loadImage(path);
+	public void setIcon(String path) {
+		GLFWImage.Buffer iconBuffer = loadImage(path);
 
-        glfwSetWindowIcon(pointer, iconBuffer);
+		glfwSetWindowIcon(pointer, iconBuffer);
 
-        iconBuffer.free();
-    }
+		iconBuffer.free();
+	}
 
-    private static GLFWImage.Buffer loadImage(String path) {
-        IntBuffer width = BufferUtils.createIntBuffer(1);
-        IntBuffer height = BufferUtils.createIntBuffer(1);
-        IntBuffer channels = BufferUtils.createIntBuffer(1);
+	private static GLFWImage.Buffer loadImage(String path) {
+		IntBuffer width = BufferUtils.createIntBuffer(1);
+		IntBuffer height = BufferUtils.createIntBuffer(1);
+		IntBuffer channels = BufferUtils.createIntBuffer(1);
 
-        ByteBuffer image = STBImage.stbi_load(path, width, height, channels, 4);
-        if (image == null) {
-            throw new RuntimeException("Failed to load image: " + path);
-        }
+		ByteBuffer image = STBImage.stbi_load(path, width, height, channels, 4);
+		if (image == null) {
+			throw new RuntimeException("Failed to load image: " + path);
+		}
 
-        GLFWImage.Buffer icons = GLFWImage.malloc(1);
-        icons.position(0);
+		GLFWImage.Buffer icons = GLFWImage.malloc(1);
+		icons.position(0);
 
-        GLFWImage icon = icons.get(0);
-        icon.set(width.get(0), height.get(0), image);
+		GLFWImage icon = icons.get(0);
+		icon.set(width.get(0), height.get(0), image);
 
-        STBImage.stbi_image_free(image);
+		STBImage.stbi_image_free(image);
 
-        return icons;
-    }
-    
+		return icons;
+	}
+
 	// MAIN FUNCTIONS
 	public void init() {
 		if (!glfwInit()) {
@@ -150,13 +151,16 @@ public class Window {
 		}
 
 		this.setPosition(this.x, this.y);
-		this.setIcon("src/main/resources/icons/main.png");
+
+		
 
 		glfwSetFramebufferSizeCallback(pointer, (window, width, height) -> {
 			this.width = width;
 			this.height = height;
 			glViewport(0, 0, width, height);
 		});
+
+		glfwSetKeyCallback(pointer, new Keybord());
 
 		glfwMakeContextCurrent(pointer);
 		GL.createCapabilities();

@@ -48,9 +48,21 @@ public class Shader {
 			glUniformMatrix4fv(locateUniform(uniformName), false, value.get(stack.mallocFloat(16)));
 		}
 	}
-	
-	public void setUniform(String uniformName,int value) {
+
+	public void setUniform(String uniformName, int value) {
 		glUniform1i(locateUniform(uniformName), value);
+	}
+
+	public void setUniform(String uniformName,float[] size) {
+		glUniform4f(locateUniform(uniformName), size[0],size[1],size[2],size[3]);
+	}
+	
+	public void setUniform(String uniformName,float x,float y,float z,float w) {
+		glUniform4f(locateUniform(uniformName), x, y, z, w);
+	}
+
+	public void setUniform(String uniformName, boolean value) {
+		glUniform1f(locateUniform(uniformName), value ? 1 : 0);
 	}
 
 	private static String getShaderName(int shaderType) {
@@ -79,29 +91,27 @@ public class Shader {
 	}
 
 	public int createShader(String shaderCode, int shaderType) {
-	    int shaderID = glCreateShader(shaderType);
-	    if (shaderID == NULL) {
-	        toConsole(logLevel.WARNING, "Could not create" + getShaderName(shaderType), true);
-	    }
+		int shaderID = glCreateShader(shaderType);
+		if (shaderID == NULL) {
+			toConsole(logLevel.WARNING, "Could not create" + getShaderName(shaderType), true);
+		}
 
-	    glShaderSource(shaderID, shaderCode);
-	    glCompileShader(shaderID);
-	    if (glGetShaderi(shaderID, GL_COMPILE_STATUS) == GL_FALSE) { // Fixing the comparison with GL_FALSE
-	        String errorLog = glGetShaderInfoLog(shaderID);
-	        toConsole(logLevel.WARNING, "Could not compile" + getShaderName(shaderType) + " INFO: " + errorLog, false);
-	    }
+		glShaderSource(shaderID, shaderCode);
+		glCompileShader(shaderID);
+		if (glGetShaderi(shaderID, GL_COMPILE_STATUS) == GL_FALSE) { // Fixing the comparison with GL_FALSE
+			String errorLog = glGetShaderInfoLog(shaderID);
+			toConsole(logLevel.WARNING, "Could not compile" + getShaderName(shaderType) + " INFO: " + errorLog, false);
+		}
 
-	    glAttachShader(programID, shaderID);
+		glAttachShader(programID, shaderID);
 
-	    return shaderID;
+		return shaderID;
 	}
-
 
 	public void link() {
 		glLinkProgram(programID);
 		if (glGetProgrami(programID, GL_LINK_STATUS) == NULL) {
-			toConsole(logLevel.WARNING, "Could not link program  INFO: " + glGetProgramInfoLog(programID, 1024),
-					false);
+			toConsole(logLevel.WARNING, "Could not link program  INFO: " + glGetProgramInfoLog(programID, 1024), false);
 		}
 
 		if (vertexShaderID != NULL) {

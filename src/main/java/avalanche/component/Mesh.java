@@ -1,18 +1,21 @@
 package avalanche.component;
 
+import org.lwjgl.opengl.GL11;
+
 import avalanche.core.Shader;
 
 public class Mesh {
-	private int ID;
-	private int vertexCount;
+	protected int ID;
+	protected int vertexCount;
 
-	private float[] positions;
-	private float[] normals;
-	private float[] texCoords;
-	private int[] indices;
+	protected float[] positions;
+	protected float[] normals;
+	protected float[] texCoords;
+	protected int[] indices;
 
-	private Texture texture = null;
-	private Shader shader = null;
+	protected Texture texture = null;
+	protected Shader shader = null;
+	protected Material material = new Material();
 
 	public Mesh(int ID, float[] positions, float[] normals, float[] texCoords, int[] indices) {
 		this.ID = ID;
@@ -27,6 +30,7 @@ public class Mesh {
 		this.normals = normals;
 		this.texCoords = texCoords;
 		this.indices = indices;
+		
 	}
 
 	public Mesh(Mesh mesh, Texture texture) {
@@ -44,6 +48,14 @@ public class Mesh {
 		this.indices = mesh.indices;
 
 		this.texture = texture;
+	}
+	
+	public Material getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(Material material) {
+		this.material = material;
 	}
 
 	public void setTexture(Texture texture) {

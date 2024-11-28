@@ -42,9 +42,13 @@ public class Renderer {
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 
+		if (mesh.getShader() != null) {
+			mesh.getShader().setUniform("baseColour", mesh.getMaterial().getBaseColor());
+		}
 		if (mesh.getTexture() != null) {
 			if (mesh.getShader() != null) {
 				mesh.getShader().setUniform("textureSampler", 0);
+				mesh.getShader().setUniform("has_transparency", mesh.getTexture().hasTransparency());
 			}
 
 			glActiveTexture(GL_TEXTURE0);

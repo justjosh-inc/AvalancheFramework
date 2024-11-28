@@ -443,4 +443,34 @@
 			<version>${steamworks4j-server.version}</version>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- Maven Jar Plugin for packaging the project as a JAR file -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+
+	</build>
+
+	<developers>
+		<developer>
+			<name>Joshua Crompton</name>
+			<email>joshslcrompton@outlook.com</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
+
 </project>
